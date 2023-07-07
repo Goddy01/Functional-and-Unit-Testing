@@ -8,9 +8,11 @@ from budget.models import Project, Expense, Category
 
 class TestProjectListPage(StaticLiveServerTestCase):
     def setUp(self):
+        # Creates a new instance of the chrome driver. Starts the service and then creates new instance of chrome driver.
         self.browser = webdriver.Chrome()
 
     def tearDown(self):
+        # Closes the browser window after setup
         self.browser.close()
 
     def test_no_project_page_is_displayed(self):
@@ -23,6 +25,7 @@ class TestProjectListPage(StaticLiveServerTestCase):
         self.assertEquals(alertMessage.text, "Sorry, you don't have any projects, yet.")
 
     def test_no_project_buttons_redirects_to_add_page(self):
+        # Ensures the 'Add Project' button redirects to the 'Add Project' url page
         self.browser.get(self.live_server_url)
 
         add_url = self.live_server_url + reverse('add')
@@ -32,6 +35,7 @@ class TestProjectListPage(StaticLiveServerTestCase):
         self.assertEquals(self.browser.current_url, add_url)
 
     def test_user_sees_project_list(self):
+        # Ensures that the projects displayed are the same with ones created
         project = Project.objects.create(
             name='project1',
             budget=10000
@@ -43,6 +47,7 @@ class TestProjectListPage(StaticLiveServerTestCase):
         self.assertEquals(text, 'project1')
 
     def test_user_is_redirected_to_project_detail_page(self):
+        # Ensures that clicking the project name redirects to the project detail page
         project = Project.objects.create(
             name='project1',
             budget=20000

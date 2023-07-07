@@ -6,7 +6,7 @@ import json
 
 
 class TestViews(TestCase):
-    
+    # Creates properties that are frequently accessed to prevent repetition
     def setUp(self):
         self.client = Client()
         self.detail_url = reverse('detail', args=['project1'])
@@ -18,18 +18,21 @@ class TestViews(TestCase):
         )
 
     def test_project_list_GET(self):
+        # Ensures that the status code of list url is correct and that the correct temlate was used
         response = self.client.get(self.list_url)
         
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'budget/project-list.html')
 
     def test_project_detail_GET(self):
+        # Ensures that a retrieved project detail page returns the right status code and that the correct template was used
         response = self.client.get(self.detail_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'budget/project-detail.html')
 
     def test_project_detail_POST_add_new_expense(self):
+        # Ensures that a new expense is added successfully provided the right properties
         category = Category.objects.create(
             project=self.project1,
             name='design'
@@ -50,12 +53,14 @@ class TestViews(TestCase):
         self.assertEquals(self.project1.expenses.first().title, 'frontend-expense')
 
     def test_project_detail_POST_no_data(self):
+        # Ensures that no expense is added provided no data
         response = self.client.post(self.detail_url)
 
         self.assertEquals(response.status_code, 302)
         self.assertEquals(self.project1.expenses.count(), 0)
 
     def test_project_detail_DELETE_an_expense(self):
+        # Ensures the deletion of an expense provided the expense id
         category = Category.objects.create(
             project=self.project1,
             name='development'
@@ -77,6 +82,7 @@ class TestViews(TestCase):
 
 
     def test_project_detail_DELETE_no_id(self):
+        #  Ensures that no expense is deleted provided no data
          catgeory = Category.objects.create(
              project=self.project1,
              name='product-mgmt'
@@ -96,6 +102,7 @@ class TestViews(TestCase):
 
 
     def test_project_create_new_project_POST(self):
+        # Ensures that a project instance is created successfully provided the appropriate data
         categories = Category.objects.all()
         response = self.client.post(self.add_url, {
             'name': 'project2',
